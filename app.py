@@ -62,7 +62,7 @@ for example in EXAMPLES:
 
 
 # Define Gradio interface with layout adjustments
-with gr.Blocks(css="body { font-family: Arial, sans-serif; }") as iface:
+with gr.Blocks() as iface:
     gr.Markdown(
         """
         # **IndicF5: High-Quality Text-to-Speech for Indian Languages**
