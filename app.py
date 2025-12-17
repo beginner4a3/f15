@@ -1,4 +1,5 @@
 import io
+import os
 import spaces
 try:
     gpu_decorator = spaces.GPU
