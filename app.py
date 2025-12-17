@@ -49,6 +49,7 @@ model = AutoModel.from_pretrained(
     trust_remote_code=True,
     low_cpu_mem_usage=False,          # must stay False – prevents meta tensors
     torch_dtype=torch.float16,         # FP16 for speed
+    token=os.getenv("HF_TOKEN") if os.getenv("HF_TOKEN") else None,
 )
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
