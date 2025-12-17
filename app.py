@@ -67,13 +67,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 model = model.to(device)
 
-# Optional torch.compile – huge inference speed boost
-if hasattr(torch, "compile"):
-    try:
-        model = torch.compile(model, mode="reduce-overhead")
-        print("✅ torch.compile enabled (reduce-overhead)")
-    except Exception as e:
-        print(f"⚠️ torch.compile failed: {e}")
+# Optional torch.compile – DISABLED: causes 3-5 min delay on first inference
+# if hasattr(torch, "compile"):
+#     try:
+#         model = torch.compile(model, mode="reduce-overhead")
+#         print("✅ torch.compile enabled (reduce-overhead)")
+#     except Exception as e:
+#         print(f"⚠️ torch.compile failed: {e}")
 
 # ------------------------------------------------------------
 #  4️⃣  Inference wrapper – inference mode + autocast
