@@ -184,4 +184,4 @@ with gr.Blocks() as iface:
     btn.click(synthesize_speech, inputs=[txt, ref_audio, ref_txt], outputs=[out])
 
 if __name__ == "__main__":
-    iface.launch()
+    iface.launch(share=True, debug=True)
