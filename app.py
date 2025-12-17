@@ -1,5 +1,15 @@
 import io
 import spaces
+try:
+    gpu_decorator = spaces.GPU
+except AttributeError:
+    # If spaces.GPU is not found or import failed partially
+    def gpu_decorator(func):
+        return func
+except ImportError:
+    # If spaces is not installed
+    def gpu_decorator(func):
+        return func
 import torch
 import librosa
 import requests
