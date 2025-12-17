@@ -96,13 +96,35 @@ def synthesize_speech(text, ref_audio, ref_text):
         tmp_wav.flush()
 
     # Fast inference
-    with torch.inference_mode(), torch.cuda.amp.autocast(enabled=True):
+    with torch.inference_mode(), torch.amp.autocast('cuda', enabled=True):
         # The IndicF5 model implements __call__ as the inference entry point
         audio = model(text, ref_audio_path=tmp_wav.name, ref_text=ref_text)
 
-    # Normalise int16 → float32 if the vocoder returned PCM16
+    # Debug: print audio info
+    print(f"[DEBUG] Audio type: {type(audio)}, dtype: {audio.dtype if hasattr(audio, 'dtype') else 'N/A'}")
+    print(f"[DEBUG] Audio shape: {audio.shape if hasattr(audio, 'shape') else len(audio)}")
+    print(f"[DEBUG] Audio min: {audio.min()}, max: {audio.max()}")
+
+    # Convert to numpy if tensor
+    if hasattr(audio, 'cpu'):
+        audio = audio.cpu().numpy()
+
+    # Ensure 1D audio
+    if len(audio.shape) > 1:
+        audio = audio.squeeze()
+
+    # Normalize to [-1, 1] range for proper playback
     if audio.dtype == np.int16:
         audio = audio.astype(np.float32) / 32768.0
+    elif audio.dtype == np.float32 or audio.dtype == np.float64:
+        # Normalize if not already in [-1, 1]
+        max_val = np.abs(audio).max()
+        if max_val > 1.0:
+            audio = audio / max_val
+    else:
+        audio = audio.astype(np.float32)
+
+    print(f"[DEBUG] Final audio shape: {audio.shape}, range: [{audio.min():.4f}, {audio.max():.4f}]")
 
     return 24000, audio
 
